@@ -1,0 +1,229 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <title>Hệ Thống AI + Yolov8 Phát Hiện Người Vi Phạm Giao Thông</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" rel="stylesheet" />
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;600&display=swap" rel="stylesheet" />
+    <style>
+        /* Reset và cơ bản */
+        * {
+            box-sizing: border-box;
+        }
+
+        body {
+            margin: 0;
+            font-family: 'Inter', sans-serif;
+            background: linear-gradient(135deg, #1f4037, #99f2c8);
+            color: #222;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            padding: 20px;
+        }
+
+        /* Header */
+        .header {
+            width: 100%;
+            max-width: 720px;
+            background: rgba(255, 255, 255, 0.15);
+            backdrop-filter: blur(12px);
+            border-radius: 16px;
+            box-shadow: 0 12px 35px rgba(0, 0, 0, 0.25);
+            padding: 25px 30px;
+            margin-bottom: 40px;
+
+            display: flex;
+            align-items: center;
+            gap: 12px;
+            color: #fff;
+        }
+
+        .header i {
+            font-size: 2.8rem;
+            color: #ff6f00;
+            text-shadow: 0 0 8px #ff6f00aa;
+        }
+
+        .header h1 {
+            margin: 0;
+            font-size: 1.8rem;
+            font-weight: 700;
+            line-height: 1.2;
+            text-shadow: 0 1px 4px rgba(0, 0, 0, 0.4);
+        }
+
+        /* Container chính */
+        .container {
+            width: 100%;
+            max-width: 600px;
+            background: #fff;
+            border-radius: 20px;
+            padding: 40px 35px;
+            box-shadow: 0 18px 48px rgba(0, 0, 0, 0.12);
+            transition: box-shadow 0.3s ease;
+        }
+
+        .container:hover {
+            box-shadow: 0 22px 60px rgba(0, 0, 0, 0.2);
+        }
+
+        /* Form */
+        form {
+            display: flex;
+            flex-direction: column;
+        }
+
+        label {
+            font-weight: 600;
+            margin-bottom: 14px;
+            font-size: 1.2rem;
+            color: #333;
+        }
+
+        input[type="file"] {
+            padding: 14px 18px;
+            font-size: 1.1rem;
+            border-radius: 14px;
+            border: 2px solid #ddd;
+            margin-bottom: 30px;
+            cursor: pointer;
+            transition: border-color 0.3s ease;
+        }
+
+        input[type="file"]:hover,
+        input[type="file"]:focus {
+            border-color: #ff6f00;
+            outline: none;
+        }
+
+        button {
+            background: linear-gradient(45deg, #ff6f00, #ff9100);
+            color: white;
+            padding: 16px 0;
+            border: none;
+            border-radius: 16px;
+            font-size: 1.3rem;
+            font-weight: 700;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 14px;
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.5);
+            transition: background 0.3s ease, transform 0.15s ease;
+            user-select: none;
+        }
+
+        button:hover {
+            background: linear-gradient(45deg, #ff9100, #ff6f00);
+            transform: scale(1.07);
+        }
+
+        /* Navigation links */
+        .nav-links {
+            margin-top: 36px;
+            display: flex;
+            flex-wrap: wrap;
+            gap: 22px;
+            justify-content: space-between;
+        }
+
+        .nav-links a {
+            flex: 1 1 48%;
+            background: #fff;
+            color: #ff6f00;
+            border-radius: 18px;
+            padding: 16px 0;
+            font-weight: 700;
+            font-size: 1.15rem;
+            text-decoration: none;
+            text-align: center;
+            box-shadow: 0 6px 20px rgba(255, 111, 0, 0.25);
+            transition: background 0.3s ease, color 0.3s ease;
+            user-select: none;
+        }
+
+        .nav-links a:hover {
+            background: #ff6f00;
+            color: white;
+            box-shadow: 0 8px 28px rgba(255, 111, 0, 0.6);
+        }
+
+        .nav-links a i {
+            margin-right: 10px;
+        }
+
+        /* Footer */
+        .footer {
+            margin-top: 48px;
+            padding: 18px 28px;
+            background: rgba(255, 255, 255, 0.15);
+            border-radius: 18px;
+            text-align: center;
+            color: white;
+            font-size: 1.05rem;
+            line-height: 1.6;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.12);
+            backdrop-filter: blur(8px);
+            border: 1px solid rgba(255, 255, 255, 0.25);
+            user-select: none;
+        }
+
+        .footer strong {
+            display: block;
+            font-size: 1.15rem;
+            margin-bottom: 4px;
+            font-weight: 700;
+        }
+
+        /* Responsive */
+        @media (max-width: 480px) {
+            .nav-links a {
+                flex: 1 1 100%;
+            }
+            .header {
+                flex-direction: column;
+                text-align: center;
+            }
+            .header h1 {
+                font-size: 1.6rem;
+            }
+            .header i {
+                font-size: 2.4rem;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header class="header" role="banner" aria-label="Tiêu đề trang">
+        <i class="fas fa-hard-hat" aria-hidden="true"></i>
+        <h1>Hệ Thống AI + Yolov8 Phát Hiện Người Vi Phạm Giao Thông</h1>
+    </header>
+
+    <main class="container" role="main">
+        <form method="post" action="/upload" enctype="multipart/form-data" aria-label="Form tải lên file phân tích">
+            <label for="file"><strong>Chọn ảnh hoặc video để phân tích:</strong></label>
+            <input type="file" name="file" id="file" accept="image/*,video/mp4" required />
+            <button type="submit" aria-label="Nút tải lên và phân tích">
+                <i class="fas fa-upload" aria-hidden="true"></i> Tải lên và phân tích
+            </button>
+        </form>
+
+        <nav class="nav-links" aria-label="Liên kết điều hướng chính">
+            <a href="/stream"><i class="fas fa-video" aria-hidden="true"></i> Xem Stream ESP32-CAM</a>
+            <a href="/stats"><i class="fas fa-chart-bar" aria-hidden="true"></i> Thống kê vi phạm</a>
+        </nav>
+    </main>
+    
+    <footer class="footer" role="contentinfo">
+        <strong>Nguyễn Quốc Huy</strong>
+        Lớp: CNTT15-02<br />
+        Trường Đại học Đại Nam
+    </footer>
+
+</body>
+</html>

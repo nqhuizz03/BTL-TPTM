@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>Giám sát mũ bảo hiểm</title>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <style>
+        * {
+            box-sizing: border-box;
+        }
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background: #eef2f7;
+            margin: 0;
+            padding: 0;
+            color: #333;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        h2 {
+            margin: 30px auto 20px;
+            color: #004a99;
+            text-align: center;
+            font-weight: 700;
+            font-size: 2rem;
+            letter-spacing: 1.2px;
+        }
+        .container {
+            width: 90%;
+            max-width: 900px;
+            margin: 0 auto 50px;
+            background: white;
+            border-radius: 12px;
+            box-shadow: 0 8px 20px rgba(0, 74, 153, 0.15);
+            padding: 25px 30px 40px;
+        }
+        img#videoStream {
+            width: 100%;
+            border-radius: 12px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.12);
+            display: block;
+            margin-bottom: 35px;
+        }
+        #statsList {
+            text-align: center;
+        }
+        #statsList h3 {
+            font-size: 1.6rem;
+            color: #004a99;
+            margin-bottom: 20px;
+            font-weight: 600;
+            letter-spacing: 0.5px;
+        }
+        ul.stats-summary {
+            list-style: none;
+            padding: 0;
+            margin: 0 auto 30px;
+            max-width: 320px;
+            display: flex;
+            justify-content: space-around;
+            background: #f0f4fa;
+            border-radius: 10px;
+            box-shadow: inset 0 0 8px #c7d1e7;
+        }
+        ul.stats-summary li {
+            flex: 1;
+            padding: 20px 15px;
+            font-weight: 700;
+            font-size: 1.3rem;
+            border-right: 1px solid #d0d7e3;
+            color: #1e2e54;
+        }
+        ul.stats-summary li:last-child {
+            border-right: none;
+        }
+        ul.stats-summary li span {
+            display: block;
+            font-size: 1.7rem;
+            color: #007bff;
+            margin-top: 6px;
+            font-weight: 800;
+        }
+        #updateTime {
+            font-size: 0.95rem;
+            color: #666;
+            margin-bottom: 25px;
+            font-style: italic;
+        }
+        h4 {
+            font-weight: 600;
+            color: #004a99;
+            margin-bottom: 12px;
+            font-size: 1.2rem;
+        }
+        ul#violationItems {
+            list-style: none;
+            max-height: 240px;
+            overflow-y: auto;
+            padding: 0;
+            margin: 0 auto 10px;
+            max-width: 380px;
+            background: #f9fafc;
+            border: 1.5px solid #dce3f0;
+            border-radius: 8px;
+            box-shadow: inset 0 2px 6px #c9d3ea;
+            text-align: left;
+        }
+        ul#violationItems li {
+            padding: 10px 14px;
+            border-bottom: 1px solid #dce3f0;
+            font-size: 0.95rem;
+            color: #4b5368;
+        }
+        ul#violationItems li:hover {
+            background-color: #e6f0ff;
+        }
+        #violationTime {
+            font-size: 0.9rem;
+            color: #007bff;
+            font-weight: 600;
+            margin-top: 10px;
+        }
+        ul#violationItems::-webkit-scrollbar {
+            width: 8px;
+        }
+        ul#violationItems::-webkit-scrollbar-thumb {
+            background-color: #007bff66;
+            border-radius: 6px;
+        }
+        ul#violationItems::-webkit-scrollbar-track {
+            background-color: #f1f5fa;
+            border-radius: 6px;
+        }
+        @media (max-width: 600px) {
+            ul.stats-summary {
+                flex-direction: column;
+                max-width: 320px;
+            }
+            ul.stats-summary li {
+                border-right: none;
+                border-bottom: 1px solid #d0d7e3;
+                padding: 12px 10px;
+                font-size: 1.1rem;
+            }
+            ul.stats-summary li:last-child {
+                border-bottom: none;
+            }
+            ul#violationItems {
+                max-width: 100%;
+                max-height: 180px;
+            }
+        }
+    </style>
+</head>
+<body>
+    <h2>Luồng Video Trực Tiếp từ ESP32-CAM</h2>
+    <div class="container">
+        <img id="videoStream" src="{{ url_for('video_feed') }}" alt="Video Stream">
+
+        <div id="statsList">
+            <h3>Thống kê mũ bảo hiểm (Real-time)</h3>
+            <ul class="stats-summary">
+                <li>Tổng số người: <span id="totalPeople">0</span></li>
+                <li>Có mũ: <span id="withHelmet">0</span></li>
+                <li>Không có mũ (vi phạm): <span id="noHelmet">0</span></li>
+            </ul>
+            <div id="updateTime">Cập nhật: --:--:--</div>
+
+            <h4>Biểu đồ Realtime</h4>
+            <canvas id="helmetChart" height="200"></canvas>
+
+            <h4>Danh sách vi phạm gần đây:</h4>
+            <ul id="violationItems"></ul>
+            <div id="violationTime">Vi phạm gần nhất: Chưa có vi phạm</div>
+        </div>
+    </div>
+
+    <script>
+        const evtSource = new EventSource("/stats_stream");
+
+        const totalEl = document.getElementById('totalPeople');
+        const withHelmetEl = document.getElementById('withHelmet');
+        const noHelmetEl = document.getElementById('noHelmet');
+        const updateTimeEl = document.getElementById('updateTime');
+        const violationItems = document.getElementById('violationItems');
+        const violationTime = document.getElementById('violationTime');
+
+        // Chart.js setup
+        const ctx = document.getElementById('helmetChart').getContext('2d');
+        const helmetChart = new Chart(ctx, {
+            type: 'bar',
+            data: {
+                labels: ['Có mũ', 'Không có mũ'],
+                datasets: [{
+                    label: 'Số lượng',
+                    data: [0, 0],
+                    backgroundColor: ['#28a745', '#dc3545']
+                }]
+            },
+            options: {
+                responsive: true,
+                plugins: {
+                    legend: { display: false }
+                },
+                scales: {
+                    y: { beginAtZero: true, stepSize: 1 }
+                }
+            }
+        });
+
+        evtSource.onmessage = function(event) {
+            try {
+                const data = JSON.parse(event.data);
+
+                const total = data.with_helmet + data.no_helmet;
+                totalEl.textContent = total;
+                withHelmetEl.textContent = data.with_helmet;
+                noHelmetEl.textContent = data.no_helmet;
+                updateTimeEl.textContent = 'Cập nhật: ' + (data.time || '--:--:--');
+
+                // Cập nhật biểu đồ
+                helmetChart.data.datasets[0].data = [data.with_helmet, data.no_helmet];
+                helmetChart.update();
+
+                // Danh sách vi phạm
+                violationItems.innerHTML = '';
+                if (data.violation_list && data.violation_list.length > 0) {
+                    data.violation_list.forEach(item => {
+                        const li = document.createElement('li');
+                        li.textContent = item;
+                        violationItems.appendChild(li);
+                    });
+                    violationTime.textContent = 'Vi phạm gần nhất: ' + data.violation_list[data.violation_list.length - 1];
+                } else {
+                    violationTime.textContent = 'Vi phạm gần nhất: Chưa có vi phạm';
+                }
+
+            } catch (e) {
+                console.error("Lỗi dữ liệu SSE:", e);
+            }
+        };
+    </script>
+</body>
+</html>

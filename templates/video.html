@@ -1,0 +1,18 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Kết quả phân tích video</title>
+</head>
+<body>
+    <h1>Kết quả phân tích video</h1>
+
+    <video width="640" height="480" controls autoplay>
+        <source src="{{ url_for('serve_video', filename=filename) }}" type="video/mp4">
+        Trình duyệt không hỗ trợ hiển thị video.
+    </video>
+
+    <br><br>
+    <a href="{{ url_for('index') }}">⬅ Quay lại trang chính</a>
+</body>
+</html>
