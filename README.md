@@ -1,6 +1,28 @@
-Dưới đây là nội dung `README.md` dành cho **hệ thống giám sát an toàn giao thông sử dụng YOLOv8** **không tích hợp blockchain**, dùng Flask để xử lý và hiển thị:
+<h2 align="center">
+    <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
+        🎓 Khoa Công nghệ Thông tin - Đại học Đại Nam
+    </a>
+</h2>
 
----
+<h2 align="center">
+    HỆ THỐNG PHÁT HIỆN GIAN LẬN TRONG THI CỬ BẰNG TRÍ TUỆ NHÂN TẠO
+</h2>
+
+<p align="center">
+    <img src="fitdnu_logo.png" alt="DaiNam University Logo" width="200"/><br>
+</p>
+
+<p align="center">
+  <a href="https://www.facebook.com/DNUAIoTLab">
+    <img src="https://img.shields.io/badge/AIoTLab-green?style=for-the-badge" alt="AIoTLab" />
+  </a>
+  <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
+    <img src="https://img.shields.io/badge/Khoa%20Công%20nghệ%20Thông%20tin-blue?style=for-the-badge" alt="Khoa CNTT" />
+  </a>
+  <a href="https://dainam.edu.vn">
+    <img src="https://img.shields.io/badge/Đại%20học%20Đại%20Nam-orange?style=for-the-badge" alt="Đại học Đại Nam" />
+  </a>
+</p>
 
 # 🚦 Hệ Thống Giám Sát An Toàn Giao Thông Bằng YOLOv8
 
