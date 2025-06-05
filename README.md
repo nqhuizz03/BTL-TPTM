@@ -1,4 +1,4 @@
-![image](https://github.com/user-attachments/assets/092a83c5-6b84-436d-accd-9b87e1f0adc3)<h2 align="center">
+<h2 align="center">
     <a href="https://dainam.edu.vn/vi/khoa-cong-nghe-thong-tin">
         🎓 Khoa Công nghệ Thông tin - Đại học Đại Nam
     </a>
@@ -9,7 +9,7 @@
 </h2>
 
 <p align="center">
-    ![image](https://github.com/user-attachments/assets/092a83c5-6b84-436d-accd-9b87e1f0adc3)
+       <img src="C:\Users\Admin\Downloads\1IT.jpg" alt="DaiNam University Logo" width="200"/><br>
 </p>
 
 <p align="center">
