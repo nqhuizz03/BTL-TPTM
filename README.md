@@ -9,7 +9,7 @@
 </h2>
 
 <p align="center">
-    <img src=""C:\Users\Admin\Downloads\1IT.jpg"" alt="DaiNam University Logo" width="200"/><br>
+    <img src=""https://scontent.fhan2-3.fna.fbcdn.net/v/t39.30808-6/486643036_1189777543149102_27833471534785857_n.jpg?_nc_cat=108&ccb=1-7&_nc_sid=a5f93a&_nc_ohc=y4CGaruKog4Q7kNvwGTzQli&_nc_oc=AdkX7SDMGFx2Sctq2uZ1NvCKTt7VvqTq7G3503OQTgLlVt5dQixL7Ps47Eln19HYXqU&_nc_zt=23&_nc_ht=scontent.fhan2-3.fna&_nc_gid=IjVPyxB5zzEvtJ0uvaBp0A&oh=00_AfP1jQA8CPtBznmki4uGbZMcOE3WOLFaEBEL9BdmHkIbsA&oe=6846D8E9"" alt="DaiNam University Logo" width="200"/><br>
 </p>
 
 <p align="center">
