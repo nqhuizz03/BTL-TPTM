@@ -153,8 +153,4 @@ yolo task=detect mode=train model=yolov8n.pt data=data.yaml epochs=100 imgsz=640
 * Python 3.8+
 * OpenCV, Flask, Ultralytics, Pandas
 
----
 
-## 📜 Giấy phép
-
-Dự án này chỉ phục vụ mục đích **giáo dục** và **nghiên cứu**, không sử dụng vào mục đích thương mại.
