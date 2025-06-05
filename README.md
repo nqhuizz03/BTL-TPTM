@@ -9,7 +9,7 @@
 </h2>
 
 <p align="center">
-    <img src="1IT.png" alt="DaiNam University Logo" width="200"/><br>
+    <img src=""C:\Users\Admin\Downloads\1IT.jpg"" alt="DaiNam University Logo" width="200"/><br>
 </p>
 
 <p align="center">
